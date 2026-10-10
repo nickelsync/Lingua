@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Grayscale-first dark palette with one restrained accent (emerald). */
+    --color-ink-950: #0a0a0b;
+    --color-ink-900: #111113;
+    --color-ink-850: #17171a;
+    --color-ink-800: #1e1e22;
+    --color-ink-700: #2a2a30;
+    --color-ink-600: #3f3f46;
+    --color-ink-400: #8b8b93;
+    --color-ink-300: #b3b3ba;
+    --color-ink-200: #d4d4d8;
+    --color-ink-100: #ececee;
+
+    --color-accent-600: #059669;
+    --color-accent-500: #10b981;
+    --color-accent-400: #34d399;
+}
+
+html {
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    @apply bg-ink-950 text-ink-200;
+}
+
+/* Subtle focus ring, keyboard accessible */
+:focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+}
+
+::selection {
+    background: var(--color-accent-600);
+    color: white;
+}
+
+/* Reusable primitives */
+@utility card {
+    @apply rounded-lg border border-ink-700 bg-ink-900;
+}
+
+@utility btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-2 disabled:opacity-50 disabled:pointer-events-none;
+}
+
+@utility btn-primary {
+    @apply btn bg-accent-600 text-white hover:bg-accent-500;
+}
+
+@utility btn-secondary {
+    @apply btn border border-ink-600 bg-ink-800 text-ink-200 hover:bg-ink-700;
+}
+
+@utility btn-ghost {
+    @apply btn text-ink-300 hover:bg-ink-800 hover:text-ink-100;
+}
+
+@utility btn-danger {
+    @apply btn bg-red-900/60 border border-red-800 text-red-200 hover:bg-red-900;
+}
+
+@utility input {
+    @apply w-full rounded-md border border-ink-600 bg-ink-900 px-3 py-2 text-sm text-ink-100 placeholder:text-ink-400 focus:border-accent-500 focus:outline-none;
+}
+
+@utility label {
+    @apply block text-sm font-medium text-ink-300 mb-1.5;
+}
+
+/* Progress transition */
+.progress-bar-fill {
+    transition: width 400ms ease;
+}
+
+/* Fade for modals/toasts */
+.fade-enter-active, .fade-leave-active { transition: opacity 150ms ease; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+
+/* Flashcard flip */
+.flip-card { perspective: 1000px; }
+.flip-inner { transition: transform 350ms ease; transform-style: preserve-3d; position: relative; }
+.flip-inner.flipped { transform: rotateY(180deg); }
+.flip-face { backface-visibility: hidden; }
+.flip-back { transform: rotateY(180deg); position: absolute; inset: 0; }

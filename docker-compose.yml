@@ -1,0 +1,40 @@
+# Single-host production deployment: app + PostgreSQL.
+# 1. cp .env.docker.example .env.docker  (fill in every value)
+# 2. docker compose up -d --build
+# App listens on 127.0.0.1:8080 — put your HTTPS proxy (Caddy/nginx/Traefik)
+# in front; the PWA service worker and speech APIs require HTTPS.
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env.docker
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - app-storage:/app/storage/app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: docker.io/library/postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-lingua}
+      POSTGRES_USER: ${DB_USERNAME:-lingua}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in the shell or an .env file}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-lingua} -d ${DB_DATABASE:-lingua}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  app-storage:
+  db-data:
